@@ -17,4 +17,16 @@ router.get("/:recipeId", async (req, res, next) => {
   }
 });
 
+router.get("/recipe/getRandomRecipes", async (req, res, next) => {
+  try {
+    const recipe = await recipes_utils.getRandomRecipes();
+    let recipes_array = [];
+    recipe.map((element) => recipes_array.push(recipes_utils.getRecipeDetailsRandom(element))); //extracting the recipe ids into array
+    res.send(recipes_array);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 module.exports = router;
