@@ -68,6 +68,65 @@ paths:
       responses:
         "200":
           description: "the user has ben successfully logged out"
+  /users/addRecipe:
+    post:
+      tags:
+      - Users
+      summary: A new recipe from the client is added to the server
+      description: A JSON object contains all the details about the new recipe.
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAddRecipe'
+        required: true
+      responses:
+        "201":
+          description: A new recipe has been added
+        "400":
+          description: wrong input parameters
+  /users/ThreelastView:
+    get:
+      tags:
+      - Users
+      summary: Return the 3 last viewd recipes that were viewed by user
+      description: Get an array of recipes that were viewd by the user
+      responses:
+        "200":
+          description: data about the user's last viewed recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        "401":
+          description: data about the user's last viewed recipes dosent returned
+      security:
+      - cookieAuth: []
+    post:
+      tags:
+      - Users
+      summary: Adding new recipe to last 3 viewed
+      description: Adding new recipe to last 3 viewed.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reciepeId:
+                  type: string
+                  description: reciepe's that user has been watched
+                  example: 716429
+      responses:
+        "200":
+          description: The Recipe successfully saved as viewed
+        "401":
+          description: The Recipe dosent successfully saved as viewed
+      security:
+      - cookieAuth: []
   /users/favorites:
     get:
       tags:
@@ -109,6 +168,44 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+  /users/returnMyRecipe:
+    get:
+      tags:
+      - Users
+      summary: Return the user recipes 
+      description: Get an array of recipes that were made by a specific user
+      responses:
+        "200":
+          description: data about the user's recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MyRecipePreview'
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
+  /users/returnMyFamilyRecipe:
+    get:
+      tags:
+      - Users
+      summary: Return the user family recipes 
+      description: Get an array of family recipes that were made by a specific user
+      responses:
+        "200":
+          description: data about the user's family recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MyRecipePreview'
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
   /recipes/{recipeId}:
     get:
       tags:
@@ -133,6 +230,109 @@ paths:
                 $ref: '#/components/schemas/RecipePreview'
         "404":
           description: recipeId is not exists
+  /recipes/getRandomRecipes:
+    get:
+      tags:
+      - Recipes
+      summary: Return random recipes details
+      description: Return random recipes details
+      responses:
+        "200":
+          description: data about the random recipes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipePreview'
+        "404":
+          description: random recipes not found
+  /recipes/getFullRecipe/{recipeId}:
+    get:
+      tags:
+      - Recipes
+      summary:  returns the information needed to present the full recipe.
+      description:  returns the information needed to present the full recipe.
+      parameters:
+      - name: recipeId
+        in: path
+        description: the uniqe id of the recipe.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: full data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeFullPreview'
+        "404":
+          description: recipeId is not exists
+  /recipes/search/{query},{number},{cuisine},{diet},{intolerances},{sort}:
+    get:
+      tags:
+      - Recipes
+      summary:  returns the relevent recipes for the searched text
+      description:  returns the relevent recipes for the searched text
+      parameters:
+      - name: query
+        in: path
+        description: the query to search.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: number
+        in: path
+        description: amount to search.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: cuisine
+        in: path
+        description: kitchen to search.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: diet
+        in: path
+        description: diet to search.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: intolerances
+        in: path
+        description: intolerances to search.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: sort
+        in: path
+        description: way to sort the search result.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: recipes found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPreview'
+        "404":
+          description: recipes was not exists
 components:
   schemas:
     User:
@@ -144,6 +344,14 @@ components:
           type: string
           description: username conatins between 3 to 8 letters only
           example: my_name
+        password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          description: password conatins between 5 to 10 chars, at least one of them
+            is a number and a special char
+          format: password
+          example: my_name@12
         firstname:
           type: string
           description: user's first name
@@ -156,14 +364,6 @@ components:
           type: string
           description: user's country
           example: Israel
-        password:
-          maxLength: 10
-          minLength: 5
-          type: string
-          description: password conatins between 5 to 10 chars, at least one of them
-            is a number and a special char
-          format: password
-          example: my_name@12
         email:
           pattern: email
           type: string
@@ -227,4 +427,267 @@ components:
           type: boolean
           description: indication if the recipe is gluten free
           example: false
-  
+    MyRecipePreview:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: string
+          description: the time takes to make this recipe
+          example: "45"
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: integer
+          description: indication if the recipe is vegetarian
+          example: 0
+        vegan:
+          type: integer
+          description: indication if the recipe is vegan
+          example: 0
+        glutenFree:
+          type: integer
+          description: indication if the recipe is gluten free
+          example: 1
+    RecipeFullPreview:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        servings:
+          type: integer
+          description: amount
+          example: 2
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        glutenFree:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        extendedIngredients:
+          type: array
+          description:  Ingredients for the recipe
+          example: [{ "aisle": "Milk, Eggs, Other Dairy",
+            "amount": 1.0,
+            "consitency": "solid",
+            "id": 1001,
+            "image": "butter-sliced.jpg",
+            "measures": {
+                "metric": {
+                    "amount": 1.0,
+                    "unitLong": "Tbsp",
+                    "unitShort": "Tbsp"
+                },
+                "us": {
+                    "amount": 1.0,
+                    "unitLong": "Tbsp",
+                    "unitShort": "Tbsp"
+                }
+            }}]
+        analyzedInstructions:
+          type: array
+          description:  Instrection for the recipe
+          example: [{ {
+                "equipment": [
+                    {
+                        "id": 404784,
+                        "image": "oven.jpg",
+                        "name": "oven",
+                        "temperature": {
+                            "number": 200.0,
+                            "unit": "Fahrenheit"
+                        }
+                    }
+                ],
+                "ingredients": [],
+                "number": 1,
+                "step": "Preheat the oven to 200 degrees F."
+            }}]
+    SearchPreview:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        glutenFree:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        analyzedInstructions:
+          type: array
+          description:  Instrection for the recipe
+          example: [{ {
+                "equipment": [
+                    {
+                        "id": 404784,
+                        "image": "oven.jpg",
+                        "name": "oven",
+                        "temperature": {
+                            "number": 200.0,
+                            "unit": "Fahrenheit"
+                        }
+                    }
+                ],
+                "ingredients": [],
+                "number": 1,
+                "step": "Preheat the oven to 200 degrees F."
+            }}]
+    UserAddRecipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        glutenFree:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        servings:
+          type: integer
+          description: amount
+          example: 2
+        extendedIngredients:
+          type: array
+          description:  Ingredients for the recipe
+          example: [{ "aisle": "Milk, Eggs, Other Dairy",
+            "amount": 1.0,
+            "consitency": "solid",
+            "id": 1001,
+            "image": "butter-sliced.jpg",
+            "measures": {
+                "metric": {
+                    "amount": 1.0,
+                    "unitLong": "Tbsp",
+                    "unitShort": "Tbsp"
+                },
+                "us": {
+                    "amount": 1.0,
+                    "unitLong": "Tbsp",
+                    "unitShort": "Tbsp"
+                }
+            }}]
+        analyzedInstructions:
+          type: array
+          description:  Instrection for the recipe
+          example: [{ {
+                "equipment": [
+                    {
+                        "id": 404784,
+                        "image": "oven.jpg",
+                        "name": "oven",
+                        "temperature": {
+                            "number": 200.0,
+                            "unit": "Fahrenheit"
+                        }
+                    }
+                ],
+                "ingredients": [],
+                "number": 1,
+                "step": "Preheat the oven to 200 degrees F."
+            }}]
+    UserLasrThreeRecipe:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: user identifier
+          example: 102
+        recipe_id:
+          type: integer
+          description: recipe identifier
+          example: 8
+
+
+
+
