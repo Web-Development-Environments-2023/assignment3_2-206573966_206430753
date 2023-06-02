@@ -105,28 +105,6 @@ paths:
           description: data about the user's last viewed recipes dosent returned
       security:
       - cookieAuth: []
-    post:
-      tags:
-      - Users
-      summary: Adding new recipe to last 3 viewed
-      description: Adding new recipe to last 3 viewed.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reciepeId:
-                  type: string
-                  description: reciepe's that user has been watched
-                  example: 716429
-      responses:
-        "200":
-          description: The Recipe successfully saved as viewed
-        "401":
-          description: The Recipe dosent successfully saved as viewed
-      security:
-      - cookieAuth: []
   /users/favorites:
     get:
       tags:
@@ -164,6 +142,47 @@ paths:
       responses:
         "200":
           description: The Recipe successfully saved as favorite
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
+  /users/UserViewed:
+    get:
+      tags:
+      - Users
+      summary: Return the recipes that were watched by user
+      description: Get an array of recipes that were watched by a specific user
+      responses:
+        "200":
+          description: data about the user's watched recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/watchedRecipePreview'
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
+    post:
+      tags:
+      - Users
+      summary: save recipe in the viewed list of a user
+      description: save recipe in the viewed list of a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reciepeId:
+                  type: string
+                  description: reciepe's id which the user watched
+                  example: 716429
+      responses:
+        "200":
+          description: The Recipe successfully saved as viewed recipe
         "401":
           description: user is not authorized
       security:
@@ -687,6 +706,13 @@ components:
           type: integer
           description: recipe identifier
           example: 8
+    watchedRecipePreview:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
 
 
 
