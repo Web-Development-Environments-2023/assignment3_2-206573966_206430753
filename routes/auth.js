@@ -36,7 +36,7 @@ router.post("/Register", async (req, res, next) => {
     id= await DButils.execQuery(`select user_id from users where username='${user_details.username}'`);
     console.log(id)
     await DButils.execQuery(
-      `INSERT INTO lastviewd (user_id) VALUES (${id[0].user_id})`
+      `INSERT INTO lastviewd (user_id,place) VALUES (${id[0].user_id},${1})`
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
