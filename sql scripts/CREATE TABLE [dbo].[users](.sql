@@ -18,6 +18,7 @@ CREATE TABLE dbo.LastViewd(
 	recipe1 INT NULL,
 	recipe2 INT NULL,
 	recipe3 INT NULL,
+	place INT NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -47,6 +48,12 @@ CREATE TABLE dbo.MyFavorites(
 	FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE dbo.UserRecipeViewed(
+	id int NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'Primary Key',
+	user_id INT NOT NULL,
+	recipe_id INT NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 
 CREATE TABLE dbo.MyFamilyRecipes(
 	id int NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'Primary Key',
