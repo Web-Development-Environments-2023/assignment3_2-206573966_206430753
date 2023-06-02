@@ -4,8 +4,17 @@ async function markAsFavorite(user_id, recipe_id){
     await DButils.execQuery(`insert into MyFavorites (user_id,recipe_id) values (${user_id},${recipe_id})`);
 }
 
+async function markAsViewed(user_id, recipe_id){
+    await DButils.execQuery(`insert into userrecipeviewed (user_id,recipe_id) values (${user_id},${recipe_id})`);
+}
+
 async function getFavoriteRecipes(user_id){
     const recipes_id = await DButils.execQuery(`select recipe_id from MyFavorites where user_id=${user_id}`);
+    return recipes_id;
+}
+
+async function getAllViewedRecipes(user_id){
+    const recipes_id = await DButils.execQuery(`select recipe_id from userrecipeviewed where user_id=${user_id}`);
     return recipes_id;
 }
 
@@ -85,6 +94,16 @@ async function getMyFamilyRecipesPreview(recipe_ids_list){
       return return_array
 }
 
+async function addtoThreelastView(user_id,recipe_id,place){
+    await DButils.execQuery(`UPDATE lastviewd SET recipe${place}=${recipe_id} WHERE user_id=${user_id}`);
+    let new_place=place+1;
+    if(new_place==4)
+    {
+        new_place=1;
+    }
+    await DButils.execQuery(`UPDATE lastviewd SET place=${new_place} WHERE user_id=${user_id}`);
+  };
+
 
 
 exports.markAsFavorite = markAsFavorite;
@@ -98,3 +117,7 @@ exports.getMyFamilyRecipePreviewDetails = getMyFamilyRecipePreviewDetails;
 exports.getMyFamilyRecipeInformation = getMyFamilyRecipeInformation;
 exports.getMyFamilyRecipes=getMyFamilyRecipes;
 exports.getLastViewedRecipes=getLastViewedRecipes;
+exports.markAsViewed=markAsViewed;
+exports.getAllViewedRecipes=getAllViewedRecipes;
+
+exports.addtoThreelastView=addtoThreelastView;
