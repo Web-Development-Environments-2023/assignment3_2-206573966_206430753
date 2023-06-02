@@ -4,6 +4,7 @@ const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
 
+
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -77,21 +78,6 @@ router.post('/addRecipe', async (req,res,next) => {
   }
 });
 
-router.post('/ThreelastView', async (req,res,next) => {
-  try{
-    let recipe_details = {
-    user_id : req.session.user_id,
-    recipe_Id : req.body.recipeId,
-    }
-    await DButils.execQuery(
-      `UPDATE lastviewd SET recipe${req.body.recipeNum}=${recipe_details.recipe_Id} WHERE user_id=${recipe_details.user_id}`
-    );
-    res.status(201).send({ message: "recipe added", success: true });
-  } catch(error){
-    next(error); 
-  }
-});
-
 
 router.get('/ThreelastView', async (req,res,next) => {
   try{
@@ -154,6 +140,44 @@ router.get('/returnMyFamilyRecipe', async (req,res,next) => {
 });
 
 
+
+
+
+/**
+ * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
+ */
+router.post('/UserViewed', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipe_id = req.body.recipeId;
+    await user_utils.markAsViewed(user_id,recipe_id);
+    /**
+     * adding and update 3 last viewd
+     */
+    let holder=await DButils.execQuery(`select place from lastviewd where user_id=${user_id}`);
+    place=holder[0].place
+    await user_utils.addtoThreelastView(user_id,recipe_id,place)
+    res.status(200).send("The Recipe successfully saved as user viewed");
+    } catch(error){
+    next(error);
+  }
+})
+
+/**
+ * This path returns the favorites recipes that were saved by the logged-in user
+ */
+router.get('/UserViewed', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let favorite_recipes = {};
+    const recipes_id = await user_utils.getAllViewedRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    res.status(200).send(recipes_id_array);
+  } catch(error){
+    next(error); 
+  }
+});
 
 
 module.exports = router;
