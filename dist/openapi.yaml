@@ -225,6 +225,30 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+    /users/returnMyFullRecipe/{recipeId}:
+      get:
+      tags:
+      - Recipes
+      summary:  returns the information needed to present the full recipe.
+      description:  returns the information needed to present the full recipe.
+      parameters:
+      - name: recipeId
+        in: path
+        description: the uniqe id of the recipe.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: full data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeFullPreview'
+        "404":
+          description: recipeId is not exists
   /recipes/{recipeId}:
     get:
       tags:
@@ -288,6 +312,7 @@ paths:
                 $ref: '#/components/schemas/RecipeFullPreview'
         "404":
           description: recipeId is not exists
+ 
   /recipes/search/{query},{number},{cuisine},{diet},{intolerances},{sort}:
     get:
       tags:
@@ -713,6 +738,54 @@ components:
           type: integer
           description: recipe identifier
           example: 102
+    MyRecipeFullPreview:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        recipe_name:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        img:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        courses_num:
+          type: integer
+          description: amount
+          example: 2
+        recipe_time:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        gloten:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        ingridiants:
+          type: array
+          description:  Ingredients for the recipe
+          example: ["Milk, Eggs, Other Dairy"]
+        instructions:
+          type: array
+          description:  Instrection for the recipe
+          example: ["Preheat the oven to 200 degrees F.","make pasta"]
 
 
 
