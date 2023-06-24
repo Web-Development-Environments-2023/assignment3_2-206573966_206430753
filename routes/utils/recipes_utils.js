@@ -20,6 +20,7 @@ async function getRecipeInformation(recipe_id) {
 }
 async function searchRecipe(recipeName,Number,Cuisine,Diet,Intolerances,Sort) 
 {
+    console.log("2")
     return await axios.get(`${api_domain}/complexSearch?apiKey=${process.env.spooncular_apiKey}&${recipeName}&${Number}&${Cuisine}&${Diet}&${Intolerances}&${Sort}`);    
 }
 
