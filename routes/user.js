@@ -69,6 +69,9 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
+/**
+ * This path gets body with recipe information and create new recipe to the the logged-in user
+ */
 router.post('/addRecipe', async (req,res,next) => {
   try{
     let recipe_details = {
@@ -94,7 +97,9 @@ router.post('/addRecipe', async (req,res,next) => {
   }
 });
 
-
+/**
+ * This path return 3 last view recipe to the the logged-in user
+ */
 router.get('/ThreelastView', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -137,6 +142,9 @@ router.get('/ThreelastView', async (req,res,next) => {
   }
 });
 
+/**
+ * This path return user recipe to the the logged-in user
+ */
 router.get('/returnMyRecipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -151,6 +159,9 @@ router.get('/returnMyRecipe', async (req,res,next) => {
   }
 });
 
+/**
+ * This path gets url parameters with recipe id and return recipe full details to the the logged-in user
+ */
 router.get('/returnMyFullRecipe/:recipeId', async (req,res,next) => {
   try{
     const results = await user_utils.getMyFullRecipesPreview(req.params.recipeId);
@@ -160,7 +171,9 @@ router.get('/returnMyFullRecipe/:recipeId', async (req,res,next) => {
   }
 });
 
-
+/**
+ * This path return user family recipes to the the logged-in user
+ */
 router.get('/returnMyFamilyRecipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -175,6 +188,9 @@ router.get('/returnMyFamilyRecipe', async (req,res,next) => {
   }
 });
 
+/**
+ * This path gets url with the recipe id and returns full family recipe information to the the logged-in user
+ */
 router.get('/returnMyFullFanilyRecipe/:recipeId', async (req,res,next) => {
   try{
     const results = await user_utils.getMyFullFamilyRecipesPreview(req.params.recipeId);
@@ -189,7 +205,7 @@ router.get('/returnMyFullFanilyRecipe/:recipeId', async (req,res,next) => {
 
 
 /**
- * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
+ * This path gets body with recipeId and save this recipe in the user viewed list of the logged-in user
  */
 router.post('/UserViewed', async (req,res,next) => {
   try{
@@ -208,7 +224,9 @@ router.post('/UserViewed', async (req,res,next) => {
   }
 })
 
-
+/**
+ * This path will return the user viewed list of the logged-in user
+ */
 router.get('/UserViewed', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
