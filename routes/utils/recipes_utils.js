@@ -73,7 +73,9 @@ async function getFullRecipeDetails(recipe_id) {
     }
 }
 
-
+/**
+ * This function recives a list of recepies id's and returns the recepies previws.
+ */
 async function getRecipesPreviewBulk(recipe_id) {
     return await axios.get(`${api_domain}/informationBulk?ids=${recipe_id}`, {
         params: {
