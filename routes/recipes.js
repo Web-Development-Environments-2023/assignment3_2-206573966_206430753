@@ -4,6 +4,9 @@ const recipes_utils = require("./utils/recipes_utils");
 
 router.get("/", (req, res) => res.send("im here"));
 
+/**
+ * This path will do the search and will return recipes details
+ */
 router.get("/search/:query&:number&:cuisine&:diet&:intolerances&:sort", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.searchRecipe(req.params.query,req.params.number,req.params.cuisine,req.params.diet,req.params.intolerances,req.params.sort);
@@ -17,7 +20,9 @@ router.get("/search/:query&:number&:cuisine&:diet&:intolerances&:sort", async (r
   //recipes_utils.getSearchResult(element))
 });
 
-
+/**
+ * This path returns 3 different random recipes 
+ */
 router.get("/getRandomRecipes", async (req, res, next) => {
   console.log(req)
   try {
@@ -30,6 +35,9 @@ router.get("/getRandomRecipes", async (req, res, next) => {
   }
 });
 
+/**
+ * This path returns a full recipe details of a recipe by its id
+ */
 router.get("/getFullRecipe/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getFullRecipeDetails(req.params.recipeId);
