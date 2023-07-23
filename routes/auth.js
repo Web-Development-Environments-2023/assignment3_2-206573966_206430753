@@ -4,6 +4,9 @@ const MySql = require("../routes/utils/MySql");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcrypt");
 
+/**
+ * This path will manage the register of new user to the system and get the information from the request body
+ */
 router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
@@ -43,6 +46,10 @@ router.post("/Register", async (req, res, next) => {
   }
 });
 
+
+/**
+ * This path will manage the login of user to the system and get the information from the request body
+ */
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
@@ -72,6 +79,10 @@ router.post("/Login", async (req, res, next) => {
   }
 });
 
+
+/**
+ * This path will manage the logout of user from the system
+ */
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
