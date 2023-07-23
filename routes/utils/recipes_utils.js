@@ -9,7 +9,9 @@ const api_domain = "https://api.spoonacular.com/recipes";
  * @param {*} recipes_info 
  */
 
-
+/**
+ * This function returns recipe information according to the recipe id
+ */
 async function getRecipeInformation(recipe_id) {
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
@@ -18,12 +20,21 @@ async function getRecipeInformation(recipe_id) {
         }
     });
 }
+
+
+/**
+ * This function returns the recipe from the search result after using the specific given parameters
+ */
 async function searchRecipe(recipeName,Number,Cuisine,Diet,Intolerances,Sort) 
 {
     console.log("2")
     return await axios.get(`${api_domain}/complexSearch?apiKey=${process.env.spooncular_apiKey}&${recipeName}&${Number}&${Cuisine}&${Diet}&${Intolerances}&${Sort}`);    
 }
 
+
+/**
+ * This function takes and return the specific information from the recipe according to the recipe id
+ */
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
@@ -40,6 +51,10 @@ async function getRecipeDetails(recipe_id) {
         
     }
 }
+
+/**
+ * This function takes and return the full specific information from the recipe according to the recipe id
+ */
 async function getFullRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image,servings, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients,analyzedInstructions} = recipe_info.data;
@@ -57,6 +72,8 @@ async function getFullRecipeDetails(recipe_id) {
         analyzedInstructions:analyzedInstructions,
     }
 }
+
+
 async function getRecipesPreviewBulk(recipe_id) {
     return await axios.get(`${api_domain}/informationBulk?ids=${recipe_id}`, {
         params: {
@@ -66,6 +83,9 @@ async function getRecipesPreviewBulk(recipe_id) {
     });
 }
 
+/**
+ * This function handles the recipe preview part for each recipe id in the list
+ */
 async function getRecipesPreview(recipe_ids_list){
     return_array = []
     for (let i = 0; i < recipe_ids_list.length; i++) {
@@ -74,6 +94,7 @@ async function getRecipesPreview(recipe_ids_list){
     }
     return return_array
 }
+
 
 async function getRecipesPreviewTemp(recipe_ids_list){
     return_array = []
@@ -85,7 +106,9 @@ async function getRecipesPreviewTemp(recipe_ids_list){
 }
 
 
-
+/**
+ * This function return 3 random recipes
+ */
 async function getRandomRecipes() {
     return await axios.get(`${api_domain}/random`, {
         params: {
@@ -95,6 +118,9 @@ async function getRandomRecipes() {
     });
 }
 
+/**
+ * This function takes and return the specific information to the random recipe
+ */
 function getRecipeDetailsRandom(recipe_details) {
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_details;
     return {
@@ -110,7 +136,9 @@ function getRecipeDetailsRandom(recipe_details) {
     }
 }
 
-
+/**
+ * This function takes and return the specific information to the recipe from the search 
+ */
 async function getSearchResult(recipe_id) {
 
     let recipe_info1 = await getRecipeInformation(recipe_id);
@@ -129,6 +157,9 @@ async function getSearchResult(recipe_id) {
     return value;
 }
 
+/**
+ * This function handles the recipe information part for each recipe id in the search result list
+ */
 async function getRecipessearchbyID(recipe_ids_list){
     return_array = []
     for (let i = 0; i < recipe_ids_list.length; i++) {
